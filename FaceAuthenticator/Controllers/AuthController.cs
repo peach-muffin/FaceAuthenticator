@@ -88,6 +88,7 @@ namespace FaceAuthenticator.Controllers
             return Ok("Api running");
         }
 
+        [Microsoft.AspNetCore.Cors.EnableCors("CorsPolicy")]
         [HttpPost]
         [Route("DeletePersonGroupContainer")]
         public async Task<IActionResult> DeletePersonGroupContainer()
@@ -96,6 +97,7 @@ namespace FaceAuthenticator.Controllers
             return Ok();
         }
 
+        [Microsoft.AspNetCore.Cors.EnableCors("CorsPolicy")]
         [HttpPost]
         [Route("CreatePersonGroupContainer")]
         public async Task<IActionResult> CreatePersonGroupContainer()
@@ -104,31 +106,64 @@ namespace FaceAuthenticator.Controllers
             return Ok();
         }
 
+        [Microsoft.AspNetCore.Cors.EnableCors("CorsPolicy")]
+        [HttpPost]
+        [Route("signup")]
+        public async Task<IActionResult> SignUp(SignUpRequest request)
+        {
+            SignUpResponse response = new SignUpResponse();
+            try
+            {
+                response = await _authDL.SignUp(request);
+            }catch(Exception e)
+            {
+                response.IsSuccess = false;
+                response.Message = e.Message;
+            }
 
+            return Ok(response);
+        }
+
+        [Microsoft.AspNetCore.Cors.EnableCors("CorsPolicy")]
         [HttpPost]
         [Route("upload")]
-        public async Task<IActionResult> UploadAsync(IFormCollection form)
+        public async Task<IActionResult> UploadAsync([FromForm]IFormCollection form)
         {
-            var files = form.Files;
+            //var files = form.Files;
 
-            if(files.Count == 0)
+            //if(files.Count == 0)
+            //{
+            //    return BadRequest("File not uploaded");
+            //}
+
+            //var file = files[0];
+
+            Directory.CreateDirectory("temp");
+            string filePath = null;
+
+            if (!form.ContainsKey("file"))
             {
                 return BadRequest("File not uploaded");
             }
-
-            var file = files[0];
+            string fileString = form["file"];
+            fileString = fileString.Replace("data:image/jpeg;base64,", "");
+            byte[] bytes = Convert.FromBase64String(fileString);
+            filePath = $"temp\\Image-{Guid.NewGuid()}.jpg";
+            string filename = Path.GetFileName(filePath);
+            System.IO.File.WriteAllBytes(filePath, bytes);
 
             string username = form["username"];
+            Console.WriteLine(username);
 
-            if(username == null)
+            if (username == null)
             {
                 return BadRequest("Username cannot be null");
             }
 
-            _blobService.upload(file);
+            //_blobService.upload(file);
+            _blobService.upload(filePath);
 
-
-            string urlImage = $"https://kakulfacerecogstorage.blob.core.windows.net/facerecognitioncontainer/{file.FileName}";
+            string urlImage = $"https://kakulfacerecogstorage.blob.core.windows.net/facerecognitioncontainer/{filename}";
 
             string userGuidString = null;
 
@@ -233,63 +268,70 @@ namespace FaceAuthenticator.Controllers
                 }
             }
 
-            //IList<DetectedFace> faceList =
-            //   await faceClient.Face.DetectWithUrlAsync(urlImage, true, true, faceAttributes);
-            //foreach (var face in faceList)
-            //{
-            //    var faceid = face.FaceId;
-            //}
-            //Microsoft.Azure.CognitiveServices.Vision.Face.Models.PersistedFace persistedFace = faceClient.PersonGroupPerson.AddFaceFromUrlAsync(Constants.PersonGroupId, userGuid, urlImage).GetAwaiter().GetResult();
+            System.IO.DirectoryInfo di = new DirectoryInfo("temp");
 
-            //persistedFace.PersistedFaceId
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+
             return Ok();
         }
 
+
         
-
-        [HttpPost]
-        [Route("signup")]
-        public async Task<IActionResult> SignUp(SignUpRequest request)
-        {
-            SignUpResponse response = new SignUpResponse();
-            try
-            {
-                response = await _authDL.SignUp(request);
-            }catch(Exception e)
-            {
-                response.IsSuccess = false;
-                response.Message = e.Message;
-            }
-
-            return Ok(response);
-        }
-
+        [Microsoft.AspNetCore.Cors.EnableCors("CorsPolicy")]
         [HttpPost]
         [Route("signin")]
-        public async Task<IActionResult> SignIn(IFormCollection form)
+        public async Task<IActionResult> SignIn([FromForm]IFormCollection form)
         {
-            var files = form.Files;
-
-            if (files.Count == 0)
+            
+            //var files = form.Files;
+            // IFormFile file = null;
+            Directory.CreateDirectory("temp");
+            string filePath = null;
+            
+            if (!form.ContainsKey("file"))
             {
                 return BadRequest("File not uploaded");
             }
+            string fileString = form["file"];
+            fileString = fileString.Replace("data:image/jpeg;base64,", "");
+            byte[] bytes = Convert.FromBase64String(fileString);
+            filePath = $"temp\\Image-{Guid.NewGuid()}.jpg";
+            string filename = Path.GetFileName(filePath);
+            System.IO.File.WriteAllBytes(filePath, bytes);
 
-            var file = files[0];
+
+            //string f = "";
+            //string u = form["file"];
+            //u.
+
+
+            //file = files[0];
+            //string errString = "This docment uses 3 other docments to docment the docmentation";
+
+            //Console.WriteLine("The original string is:{0}'{1}'{0}", Environment.NewLine, errString);
+
+            //// Correct the spelling of "document".
+
+            //string correctString = errString.Replace("docment", "document");
+
 
             string username = form["username"];
+            Console.WriteLine(username);
 
             if (username == null)
             {
                 return BadRequest("Username cannot be null");
             }
+        
+            //_blobService.upload(file);
+            _blobService.upload(filePath);
 
-            _blobService.upload(file);
-
-            string urlImage = $"https://kakulfacerecogstorage.blob.core.windows.net/facerecognitioncontainer/{file.FileName}";
+            string urlImage = $"https://kakulfacerecogstorage.blob.core.windows.net/facerecognitioncontainer/{filename}";
 
             var signInTask = _authDL.SignIn(new SignInRequest() { UserName = username });
-
 
 
             List<Guid> sourceFaceIds = new List<Guid>();
@@ -317,14 +359,19 @@ namespace FaceAuthenticator.Controllers
                 Console.WriteLine("Person is identified for the face" +
                     $" confidence: {identifyResult.Candidates[0].Confidence}.");
             }
-
-
       
-            var signRespoonse = await signInTask;
+            var signResponse = await signInTask;
 
-            if (foundPersonId == signRespoonse.Guid)
+            System.IO.DirectoryInfo di = new DirectoryInfo("temp");
+
+            foreach (FileInfo file in di.GetFiles())
             {
-                return Ok($"Welcome {signRespoonse.FirstName}");
+                file.Delete();
+            }
+
+            if (foundPersonId == signResponse.Guid)
+            {
+                return Ok($"Welcome {signResponse.FirstName}");
             }
             else
             {

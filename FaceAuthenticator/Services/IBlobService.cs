@@ -9,5 +9,7 @@ namespace FaceAuthenticator.Services
     public interface IBlobService
     {
         void upload(IFormFile formFile);
+        public void upload(string filePath);
+
     }
 }

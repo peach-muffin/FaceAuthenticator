@@ -66,7 +66,6 @@ namespace FaceAuthenticator.DataAccessLayer
         public async Task<SignInResponse> SignIn(SignInRequest request)
         {
             SignInResponse response = new SignInResponse();
-            
             try
             {
                 if (_mySqlConnection.State != System.Data.ConnectionState.Open)

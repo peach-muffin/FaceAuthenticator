@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using System.IO;
 namespace FaceAuthenticator.Services
 {
     public class BlobService : IBlobService
@@ -27,6 +27,20 @@ namespace FaceAuthenticator.Services
 
             using var stream = formFile.OpenReadStream();
             blobClient.Upload(stream, true);
+
         }
+        public void upload(string filePath)
+        {
+            var containerName = _configuration.GetSection("Storage:ContainerName").Value;
+
+            var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+            string filename = Path.GetFileName(filePath);
+            var blobClient = containerClient.GetBlobClient(filename);
+
+            blobClient.Upload(filePath, true);
+
+        }
+
+
     }
 }

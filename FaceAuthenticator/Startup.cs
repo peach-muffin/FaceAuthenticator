@@ -44,13 +44,13 @@ namespace FaceAuthenticator
 
             services.AddTransient<IBlobService, BlobService>();
 
-            // authenticate the face api
-
-         
-            //_timeStampQueue.Enqueue(DateTime.UtcNow);
-
-
-            // createAsync use or getAsync 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +65,8 @@ namespace FaceAuthenticator
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
