@@ -15,14 +15,9 @@ export default function Login() {
     };
     const [image, setImage] = useState('');
     const webcamRef = useRef(null);
-    // const [values, setValues] = useState({
-    //   username: "",
-    //   usernameflag: false
-    // })
 
     const [username, setUsername] = useState('');
     const [usernameflag, setUsernameflag] = useState(false);
-    // const [flag, setFlag] = useState(false);
     const [firstname, setFirstname] = useState('');
 
 
@@ -46,7 +41,6 @@ export default function Login() {
         load.preventDefault();
         setUsernameflag(false);
         if (username === '') {
-            // setValues({ usernameflag: true })
             setUsernameflag(true);
         }
         if (username !== '' && image !== '') {
@@ -55,7 +49,6 @@ export default function Login() {
             let formData = new FormData();
             formData.append('file', image);
             formData.append('username', username);
-            // formData.append('filename',)
 
             authServices.Login(formData)
                 .then((formData) => {
@@ -63,7 +56,6 @@ export default function Login() {
                     setFirstname(formData.data);
                     console.log("logged in");
                     console.log(firstname);
-                    // setFlag(true);
                     Redirect();
                 })
                 .catch((error) => {
@@ -75,11 +67,6 @@ export default function Login() {
         else {
             console.log('Fill field')
         }
-        // if (flag === true) {
-        //     console.log(firstname);
-        //     alert('Now you will be redirected to the welcome page');
-        //     navigate('/welcome', { state: { name: firstname } });
-        // }
     }
 
 

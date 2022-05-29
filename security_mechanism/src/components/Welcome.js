@@ -5,7 +5,9 @@ export default function Welcome() {
     const location = useLocation();
     return (
         <>
-            <div className='container'><div className='welcome-text'>{location.state.name}</div></div>
+            <div className='container'>
+                <div className='welcome-text'>Hello!</div>
+            </div>
         </>
     )
 }

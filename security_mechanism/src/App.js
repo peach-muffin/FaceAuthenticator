@@ -15,11 +15,11 @@ function App() {
                 <BrowserRouter>
                     <Navbar />
                     <Routes>
-                        <Route exact path="/" element={<Home />} />
-                        <Route exact path="/signup" element={<SignUpFunc />} />
-                        <Route exact path="/Login" element={<Login />} />
-                        <Route exact path="/verify-using-face" element={<RegisterUsingFace />} />
-                        <Route exact path="/welcome" element={<Welcome />} />
+                        <Route exact path="/face-auth-front-end/" element={<Home />} />
+                        <Route exact path="/face-auth-front-end/signup" element={<SignUpFunc />} />
+                        <Route exact path="/face-auth-front-end/Login" element={<Login />} />
+                        <Route exact path="/face-auth-front-end/verify-using-face" element={<RegisterUsingFace />} />
+                        <Route exact path="/face-auth-front-end/welcome" element={<Welcome />} />
                     </Routes>
                 </BrowserRouter>
             </div>
