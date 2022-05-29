@@ -25,44 +25,6 @@ namespace FaceAuthenticator.DataAccessLayer
             _dbService = dbService;
         }
 
-        //public async Task<SignInResponse> InitializeDb()
-        //{
-
-        //    try
-        //    {
-        //        if (_mySqlConnection.State != System.Data.ConnectionState.Open)
-        //        {
-        //            await _mySqlConnection.OpenAsync();
-        //        }
-
-        //        string SqlQuery = @"select FirstName, Guid from crudoperation.userdetail where UserName=@UserName";
-
-        //        using (MySqlCommand sqlCommand = new MySqlCommand(SqlQuery, _mySqlConnection))
-        //        {
-        //            sqlCommand.CommandType = System.Data.CommandType.Text;
-        //            sqlCommand.CommandTimeout = 180;
-
-
-        //            int status = await sqlCommand.ExecuteNonQueryAsync();
-
-        //            if(status <= 0)
-        //            {
-                        
-        //            }
-                   
-        //        }
-
-        //    }
-        //    finally
-        //    {
-        //        await _mySqlConnection.CloseAsync();
-        //        await _mySqlConnection.DisposeAsync();
-        //    }
-
-        //    return response;
-        //}
-
-
         public async Task<SignInResponse> SignIn(SignInRequest request)
         {
             SignInResponse response = new SignInResponse();

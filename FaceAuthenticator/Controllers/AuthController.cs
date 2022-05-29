@@ -19,7 +19,7 @@ namespace FaceAuthenticator.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        const string subscriptionKey ="enter subscription key";
+        const string subscriptionKey = "enter subscription key";
         const string endPoint = "endpoint to be entered here";
 
         private readonly IAuthDL _authDL;
@@ -36,12 +36,6 @@ namespace FaceAuthenticator.Controllers
             _authDL = authDL;
             _blobService = blobService;
             faceClient = Authenticate(endPoint, subscriptionKey);
-
-            //DeletePersonGroups(faceClient);
-            //faceClient.PersonGroup.CreateAsync(Constants.PersonGroupId, Constants.PersonGroupName, recognitionModel: RecognitionModel.Recognition04).GetAwaiter().GetResult();
-            //faceClient.PersonGroup.GetAsync("107d9d62-9126-44ee-a5b8-9f089f14ed62").GetAwaiter().GetResult();
-
-            //faceClient.PersonGroup.
 
             _dbService = dbService;
             _mySqlConnection = _dbService.MySqlConnection;
@@ -129,15 +123,6 @@ namespace FaceAuthenticator.Controllers
         [Route("upload")]
         public async Task<IActionResult> UploadAsync([FromForm]IFormCollection form)
         {
-            //var files = form.Files;
-
-            //if(files.Count == 0)
-            //{
-            //    return BadRequest("File not uploaded");
-            //}
-
-            //var file = files[0];
-
             Directory.CreateDirectory("temp");
             string filePath = null;
 
@@ -159,8 +144,7 @@ namespace FaceAuthenticator.Controllers
             {
                 return BadRequest("Username cannot be null");
             }
-
-            //_blobService.upload(file);
+            
             _blobService.upload(filePath);
 
             string urlImage = $"https://kakulfacerecogstorage.blob.core.windows.net/facerecognitioncontainer/{filename}";
@@ -205,30 +189,6 @@ namespace FaceAuthenticator.Controllers
 
 
             Console.WriteLine($"userGuidString: {userGuidString} personId: {person.PersonId}");
-            //using (Stream stream = File.OpenRead(urlImage))
-            //{
-            //    await faceClient.PersonGroupPerson.AddFaceFromStreamAsync(personGroupId, personId, stream);
-
-            //}
-
-
-            //faceClient.PersonGroupPerson.AddFaceFromUrlAsync(Constants.PersonGroupId, username, urlImage);
-            //FaceAttributeType[] faceAttributes =
-            //{
-            //     FaceAttributeType.QualityForRecognition
-            //};
-
-            //IList<DetectedFace> detectedFaces = await faceClient.Face.DetectWithUrlAsync(urlImage, recognitionModel: RecognitionModel.Recognition04, detectionModel: DetectionModel.Detection03, returnFaceAttributes: new List<FaceAttributeType> { FaceAttributeType.QualityForRecognition });
-            //List<DetectedFace> sufficientQualityFaces = new List<DetectedFace>();
-            //foreach (DetectedFace detectedFace in detectedFaces)
-            //{
-            //    var faceQualityForRecognition = detectedFace.FaceAttributes.QualityForRecognition;
-            //    if (faceQualityForRecognition.HasValue && (faceQualityForRecognition.Value >= QualityForRecognition.Medium))
-            //    {
-            //        sufficientQualityFaces.Add(detectedFace);
-            //    }
-            //}
-            //Console.WriteLine($"{detectedFaces.Count} face(s) with {sufficientQualityFaces.Count} having sufficient quality for recognition detected from image");
 
             PersistedFace face = await faceClient.PersonGroupPerson.AddFaceFromUrlAsync(Constants.PersonGroupId, person.PersonId,
                         urlImage);
@@ -286,8 +246,6 @@ namespace FaceAuthenticator.Controllers
         public async Task<IActionResult> SignIn([FromForm]IFormCollection form)
         {
             
-            //var files = form.Files;
-            // IFormFile file = null;
             Directory.CreateDirectory("temp");
             string filePath = null;
             
@@ -298,25 +256,9 @@ namespace FaceAuthenticator.Controllers
             string fileString = form["file"];
             fileString = fileString.Replace("data:image/jpeg;base64,", "");
             byte[] bytes = Convert.FromBase64String(fileString);
-            filePath = $"temp\\Image-{Guid.NewGuid()}.jpg";
+            filePath = $"temp\\Image.jpg";
             string filename = Path.GetFileName(filePath);
             System.IO.File.WriteAllBytes(filePath, bytes);
-
-
-            //string f = "";
-            //string u = form["file"];
-            //u.
-
-
-            //file = files[0];
-            //string errString = "This docment uses 3 other docments to docment the docmentation";
-
-            //Console.WriteLine("The original string is:{0}'{1}'{0}", Environment.NewLine, errString);
-
-            //// Correct the spelling of "document".
-
-            //string correctString = errString.Replace("docment", "document");
-
 
             string username = form["username"];
             Console.WriteLine(username);
@@ -325,8 +267,7 @@ namespace FaceAuthenticator.Controllers
             {
                 return BadRequest("Username cannot be null");
             }
-        
-            //_blobService.upload(file);
+            
             _blobService.upload(filePath);
 
             string urlImage = $"https://kakulfacerecogstorage.blob.core.windows.net/facerecognitioncontainer/{filename}";

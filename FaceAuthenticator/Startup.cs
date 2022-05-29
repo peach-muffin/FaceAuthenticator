@@ -39,7 +39,8 @@ namespace FaceAuthenticator
             
             services.AddAzureClients(builder =>
             {
-                builder.AddBlobServiceClient(Configuration.GetSection("Storage:BlobConnectionString").Value);
+                builder.AddBlobServiceClient("DefaultEndpointsProtocol=https;AccountName=kakulfacerecogstorage;AccountKey=US8uF4zDppXqcXvpxSqSMvSnJCX5/LnFvriHnNQPDyz/PvETwdebk8IAcO2m5h/5EDbL90XmDW7H+AStC7+7lA==;EndpointSuffix=core.windows.net");
+                // builder.AddBlobServiceClient(Configuration.GetSection("Storage:BlobConnectionString").Value);
             });
 
             services.AddTransient<IBlobService, BlobService>();
